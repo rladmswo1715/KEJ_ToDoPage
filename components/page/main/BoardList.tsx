@@ -10,13 +10,10 @@ const BoardList = () => {
       {list.length > 0 ? (
         list.map((listItem) => (
           <div
-            key={listItem.boardId}
+            key={listItem.id}
             className="flex flex-col p-4 mb-[12.5rem] bg-gray-200 min-w-[28rem] min-h-[4rem] rounded-lg gap-6"
           >
-            <BoardTitleContainer
-              boardId={listItem.boardId}
-              title={listItem.title}
-            />
+            <BoardTitleContainer boardId={listItem.id} title={listItem.title} />
 
             <div className="flex flex-col">
               <div className="flex flex-col gap-3">

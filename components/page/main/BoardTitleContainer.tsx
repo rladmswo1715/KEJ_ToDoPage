@@ -3,9 +3,11 @@ import BoardTitleInput from "./BoardTitleInput";
 import { useState } from "react";
 import { deleteBoard } from "@/utils/indexedDB";
 import { useBoardContext } from "@/contexts/BoardContext";
-import { IBoard } from "@/types/board";
 
-type BoardTitleContainerProps = IBoard;
+interface BoardTitleContainerProps {
+  boardId: number;
+  title: string;
+}
 
 const BoardTitleContainer = ({ title, boardId }: BoardTitleContainerProps) => {
   const [isTitleEditing, setTitleEditing] = useState(false);
