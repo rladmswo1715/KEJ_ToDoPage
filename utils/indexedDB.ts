@@ -21,9 +21,9 @@ export const addBoard = async (title: string) => {
   return db.add("Board", { title });
 };
 
-export const updateBoard = async (id: number, newTitle: string) => {
+export const updateBoard = async (boardId: number, newTitle: string) => {
   const db = await initDB();
-  const board = await db.get("Board", id);
+  const board = await db.get("Board", boardId);
 
   if (board) {
     board.title = newTitle;
@@ -31,23 +31,56 @@ export const updateBoard = async (id: number, newTitle: string) => {
   }
 };
 
-export async function deleteBoard(boardId: number) {
+export const deleteBoard = async (boardId: number) => {
   const db = await initDB();
   await db.delete("Board", boardId);
-}
 
-export const addSchedule = async (
-  boardId: number,
-  title: string,
-  description: string,
-  date: string
-) => {
-  const db = await initDB();
-  return db.add("Schedule", { boardId, title, description, date });
+  const allSchedules = await db.getAll("Schedule");
+  const schedulesToDelete = allSchedules.filter(
+    (schedule) => schedule.boardId === boardId
+  );
+
+  const tx = db.transaction("Schedule", "readwrite");
+  const store = tx.objectStore("Schedule");
+
+  for (const schedule of schedulesToDelete) {
+    store.delete(schedule.id);
+  }
+
+  return tx.done;
 };
 
-export async function getSchedulesByBoard() {
+export const addSchedule = async (boardId: number, content: string) => {
+  const db = await initDB();
+  return db.add("Schedule", { boardId, content });
+};
+
+export const updateSchedule = async (
+  scheduleId: number,
+  newContent: string
+) => {
+  const db = await initDB();
+  const schedule = await db.get("Schedule", scheduleId);
+
+  if (schedule) {
+    schedule.content = newContent;
+    return db.put("Schedule", schedule);
+  }
+};
+
+export const deleteSchedule = async (scheduleId: number) => {
+  const db = await initDB();
+  await db.delete("Schedule", scheduleId);
+};
+
+export const getBoard = async () => {
   const db = await initDB();
   const allSchedules = await db.getAll("Board");
   return allSchedules;
-}
+};
+
+export const getSchedulesByBoard = async (boardId: number) => {
+  const db = await initDB();
+  const allSchedules = await db.getAll("Schedule");
+  return allSchedules.filter((schedule) => schedule.boardId === boardId);
+};
