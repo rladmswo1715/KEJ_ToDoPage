@@ -73,14 +73,13 @@ export const deleteSchedule = async (scheduleId: number) => {
   await db.delete("Schedule", scheduleId);
 };
 
-export const getBoard = async () => {
+export const getTodoList = async () => {
   const db = await initDB();
-  const allSchedules = await db.getAll("Board");
-  return allSchedules;
-};
+  const boards = await db.getAll("Board");
+  const schedules = await db.getAll("Schedule");
 
-export const getSchedulesByBoard = async (boardId: number) => {
-  const db = await initDB();
-  const allSchedules = await db.getAll("Schedule");
-  return allSchedules.filter((schedule) => schedule.boardId === boardId);
+  return boards.map((board) => ({
+    ...board,
+    schedules: schedules.filter((schedule) => schedule.boardId === board.id),
+  }));
 };

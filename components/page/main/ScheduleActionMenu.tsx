@@ -1,4 +1,4 @@
-import { useScheduleContext } from "@/contexts/ScheduleContext";
+import { useTodoListContext } from "@/contexts/TodoListContext";
 import { deleteSchedule } from "@/utils/indexedDB";
 import { MdOutlineDeleteForever, MdOutlineModeEdit } from "react-icons/md";
 
@@ -9,11 +9,10 @@ interface ScheduleActionMenuProps {
 }
 
 const ScheduleActionMenu = ({
-  boardId,
   scheduleId,
   setEditState,
 }: ScheduleActionMenuProps) => {
-  const { refetchSchedules } = useScheduleContext();
+  const { refetchList } = useTodoListContext();
 
   const handleEditClick = () => setEditState(true);
 
@@ -21,7 +20,7 @@ const ScheduleActionMenu = ({
     if (!confirm("정말 삭제하시겠어요?")) return;
 
     deleteSchedule(scheduleId);
-    refetchSchedules(boardId);
+    refetchList();
   };
 
   const actionOptions = [

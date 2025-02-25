@@ -2,7 +2,7 @@ import Kebab from "@/components/common/kebab/Kebab";
 import BoardTitleInput from "./BoardTitleInput";
 import { useState } from "react";
 import { deleteBoard } from "@/utils/indexedDB";
-import { useBoardContext } from "@/contexts/BoardContext";
+import { useTodoListContext } from "@/contexts/TodoListContext";
 
 interface BoardTitleContainerProps {
   boardId: number;
@@ -12,7 +12,7 @@ interface BoardTitleContainerProps {
 const BoardTitleContainer = ({ title, boardId }: BoardTitleContainerProps) => {
   const [isTitleEditing, setTitleEditing] = useState(false);
   const [titleValue, setTitleValue] = useState(title);
-  const { refetchList } = useBoardContext();
+  const { refetchList } = useTodoListContext();
 
   const handleEditBoardClick = () => setTitleEditing((prev) => !prev);
 

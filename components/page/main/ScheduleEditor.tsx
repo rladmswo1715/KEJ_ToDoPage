@@ -1,6 +1,6 @@
 import Button from "@/components/common/Button";
 import React, { useEffect, useRef, useState } from "react";
-import { useScheduleContext } from "@/contexts/ScheduleContext";
+import { useTodoListContext } from "@/contexts/TodoListContext";
 import { addSchedule, updateSchedule } from "@/utils/indexedDB";
 
 interface ScheduleEditorProps {
@@ -20,7 +20,7 @@ const ScheduleEditor = ({
 }: ScheduleEditorProps) => {
   const [text, setText] = useState(contentText || "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { refetchSchedules } = useScheduleContext();
+  const { refetchList } = useTodoListContext();
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -43,7 +43,7 @@ const ScheduleEditor = ({
     }
 
     setState(false);
-    refetchSchedules(boardId);
+    refetchList();
   };
 
   return (

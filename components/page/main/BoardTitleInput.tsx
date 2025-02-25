@@ -1,5 +1,5 @@
 import Button from "@/components/common/Button";
-import { useBoardContext } from "@/contexts/BoardContext";
+import { useTodoListContext } from "@/contexts/TodoListContext";
 import { ETitleSaveButtonText } from "@/types/enum";
 import { addBoard, updateBoard } from "@/utils/indexedDB";
 
@@ -18,7 +18,7 @@ const BoardTitleInput = ({
   titleValue,
   boardId,
 }: AddBoardInputBoxProps) => {
-  const { refetchList } = useBoardContext();
+  const { refetchList } = useTodoListContext();
 
   const handleSaveClick = async () => {
     if (!titleValue.trim()) {
@@ -26,8 +26,12 @@ const BoardTitleInput = ({
       return;
     }
 
-    if (type === "create") await addBoard(titleValue);
-    else if (type === "edit" && boardId) await updateBoard(boardId, titleValue);
+    if (type === "create") {
+      await addBoard(titleValue);
+      setTitleValue("");
+    } else if (type === "edit" && boardId) {
+      await updateBoard(boardId, titleValue);
+    }
 
     setCreateState(false);
     refetchList();

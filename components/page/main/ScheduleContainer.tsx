@@ -1,14 +1,16 @@
-import { useScheduleContext } from "@/contexts/ScheduleContext";
 import ScheduleAddContainer from "./ScheduleAddContainer";
 import ScheduleItem from "./ScheduleItem";
+import { ISchedule } from "@/types/schedule";
 
 interface ScheduleContainerProps {
   boardId: number;
+  schedulesData: ISchedule[];
 }
 
-const ScheduleContainer = ({ boardId }: ScheduleContainerProps) => {
-  const { schedules } = useScheduleContext();
-
+const ScheduleContainer = ({
+  boardId,
+  schedulesData,
+}: ScheduleContainerProps) => {
   const renderEmptySchedule = (
     <div className="px-2 py-3 w-full min-h-[3rem] bg-gray-200 border-2 border-var-primary-300 rounded-md">
       <p className="text-base font-semibold text-center">
@@ -19,8 +21,8 @@ const ScheduleContainer = ({ boardId }: ScheduleContainerProps) => {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-3">
-        {schedules.length > 0
-          ? schedules.map((schedule) => {
+        {schedulesData.length > 0
+          ? schedulesData.map((schedule) => {
               return (
                 <ScheduleItem
                   key={schedule.id}
