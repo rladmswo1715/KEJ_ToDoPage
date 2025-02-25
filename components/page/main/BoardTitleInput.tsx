@@ -54,7 +54,7 @@ const BoardTitleInput = ({
   };
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4" onPointerDown={(e) => e.stopPropagation()}>
       <input
         value={titleValue}
         onChange={(e) => setTitleValue(e.target.value)}

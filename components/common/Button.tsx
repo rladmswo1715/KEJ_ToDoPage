@@ -1,11 +1,18 @@
 import React, { JSX } from "react";
+import { twMerge } from "tailwind-merge";
 
 type ButtonProps = {
   btnColor?: "primary" | "gray";
+  type?: "button" | "submit";
   children?: JSX.Element[] | JSX.Element | string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button = ({ btnColor = "primary", children, ...rest }: ButtonProps) => {
+const Button = ({
+  btnColor = "primary",
+  type = "button",
+  children,
+  ...rest
+}: ButtonProps) => {
   const buttonColorStyle = () => {
     switch (btnColor) {
       case "primary":
@@ -20,9 +27,11 @@ const Button = ({ btnColor = "primary", children, ...rest }: ButtonProps) => {
   return (
     <button
       {...rest}
-      className={`flex justify-between items-center gap-2 px-4 py-2 border-2 rounded-lg text-xl font-semibold ${buttonColorStyle()} ${
+      type={type}
+      className={twMerge(
+        `flex shrink-0 justify-between items-center gap-2 px-4 py-2 border-2 rounded-lg text-xl font-semibold ${buttonColorStyle()}`,
         rest.className
-      }`}
+      )}
     >
       {children}
     </button>

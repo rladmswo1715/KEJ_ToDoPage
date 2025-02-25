@@ -1,3 +1,5 @@
+import { IBoard } from "@/types/board";
+import { ISchedule } from "@/types/schedule";
 import { openDB } from "idb";
 
 export const initDB = async () => {
@@ -18,7 +20,11 @@ export const initDB = async () => {
 
 export const addBoard = async (title: string) => {
   const db = await initDB();
-  return db.add("Board", { title });
+
+  const boards = await db.getAll("Board");
+  const newOrder = boards.length + 1;
+
+  return db.add("Board", { title, order: newOrder });
 };
 
 export const updateBoard = async (boardId: number, newTitle: string) => {
@@ -52,7 +58,13 @@ export const deleteBoard = async (boardId: number) => {
 
 export const addSchedule = async (boardId: number, content: string) => {
   const db = await initDB();
-  return db.add("Schedule", { boardId, content });
+  const schedules = await db.getAll("Schedule");
+
+  const lastOrder = schedules
+    .filter((item) => item.boardId === boardId)
+    .reduce((max, item) => Math.max(max, item.order), 1);
+
+  return db.add("Schedule", { boardId, content, order: lastOrder + 1 });
 };
 
 export const updateSchedule = async (
@@ -82,4 +94,40 @@ export const getTodoList = async () => {
     ...board,
     schedules: schedules.filter((schedule) => schedule.boardId === board.id),
   }));
+};
+
+export const saveBoardOrder = async (newBoard: IBoard[]) => {
+  const db = await initDB();
+  const tx = db.transaction("Board", "readwrite");
+  const store = tx.objectStore("Board");
+
+  for (let i = 0; i < newBoard.length; i++) {
+    const board = { ...newBoard[i], order: i };
+    await store.put(board);
+  }
+
+  await tx.done;
+};
+
+export const saveScheduleOrder = async (
+  boardId: number,
+  newSchedules: ISchedule[]
+) => {
+  const db = await initDB();
+  const tx = db.transaction("Schedule", "readwrite");
+  const store = tx.objectStore("Schedule");
+
+  const existingSchedules = await store.getAll();
+  existingSchedules.forEach(async (schedule) => {
+    if (schedule.boardId === boardId) {
+      await store.delete(schedule.id);
+    }
+  });
+
+  for (let i = 0; i < newSchedules.length; i++) {
+    const schedule = { ...newSchedules[i], order: i };
+    await store.put(schedule);
+  }
+
+  return tx.done;
 };

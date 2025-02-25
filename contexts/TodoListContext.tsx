@@ -4,6 +4,7 @@ import { IBoard } from "@/types/board";
 
 interface TodoListContextType {
   list: IBoard[];
+  setList: React.Dispatch<React.SetStateAction<IBoard[]>>;
   refetchList: () => void;
 }
 
@@ -20,8 +21,7 @@ export const TodoListProvider = ({
 
   const refetchList = async () => {
     const data = await getTodoList();
-    console.log("getTodoList::", data);
-    setList(data);
+    setList(data.sort((a, b) => a.order - b.order));
   };
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export const TodoListProvider = ({
   }, []);
 
   return (
-    <TodoListContext.Provider value={{ list, refetchList }}>
+    <TodoListContext.Provider value={{ list, setList, refetchList }}>
       {children}
     </TodoListContext.Provider>
   );

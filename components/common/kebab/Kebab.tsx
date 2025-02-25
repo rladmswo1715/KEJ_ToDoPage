@@ -19,7 +19,11 @@ const Kebab = ({ itemOptions }: KebabProps) => {
   useClickOutside(kebabRef, () => setVisible(false));
 
   return (
-    <div className="relative" ref={kebabRef}>
+    <div
+      className="relative"
+      ref={kebabRef}
+      onPointerDown={(e) => e.stopPropagation()}
+    >
       <button type="button" onClick={handleKebabButtonClick}>
         <IoIosMenu size={32} />
       </button>
